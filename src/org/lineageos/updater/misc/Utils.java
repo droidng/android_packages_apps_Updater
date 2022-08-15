@@ -90,6 +90,7 @@ public class Utils {
         update.setFileSize(object.getLong("size"));
         update.setDownloadUrl(object.getString("url"));
         update.setVersion(object.getString("version"));
+        update.setIsIncremental(object.has("old_incr_id"));
         return update;
     }
 
@@ -113,8 +114,8 @@ public class Utils {
     public static boolean canInstall(UpdateBaseInfo update) {
         return (SystemProperties.getBoolean(Constants.PROP_UPDATER_ALLOW_DOWNGRADING, false) ||
                 update.getTimestamp() > SystemProperties.getLong(Constants.PROP_BUILD_DATE, 0)) &&
-                update.getVersion().equalsIgnoreCase(
-                        SystemProperties.get(Constants.PROP_BUILD_VERSION));
+                update.getVersion().split("\\.")[0].equalsIgnoreCase(
+                        SystemProperties.get(Constants.PROP_BUILD_VERSION).split("\\.")[0]);
     }
 
     public static List<UpdateInfo> parseJson(File file, boolean compatibleOnly)
